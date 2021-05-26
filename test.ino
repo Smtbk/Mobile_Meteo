@@ -1,6 +1,10 @@
 #include <My_LiquidCrystal_I2C.h>
 #include <DHT.h>
-#define K 0.9
+#include <My_Sensor.h>
+#define MAX_WAIT 2000
+#define pin_in 7
+#define pin_out 13
+#define K 0.4
 
 My_LiquidCrystal_I2C lcd;
 DHT dht(2);
@@ -24,10 +28,28 @@ void printMeteo() {
   lcd.print(hum);
 }
 
+void meteo() {
+  float temp_t = dht.readTemperature();
+  float temp_h = dht.readHumidity();
+  temp = filter(temp_t, temp);
+  hum = filter(temp_h, hum);
+  printMeteo();
+}
+
+void my_sensor(){
+  int i = sensorRead(pin_in, pin_out);
+  lcd.setCursor(2, 12);
+  if(i != 0)
+      lcd.print("   rain");
+    else
+      lcd.print("no rain");
+}
+
 void setup() {
   Serial.begin(9600);
   lcd.init();
   dht.begin();
+  sensorBegin(pin_in, pin_out);
   temp = dht.readTemperature();
   hum = dht.readHumidity();
   printMeteo();
@@ -35,17 +57,10 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - time > 2000)
+  if (millis() - time > MAX_WAIT)
   {
     time = millis();
-    float temp_t = dht.readTemperature();
-    float temp_h = dht.readHumidity();
-    lcd.setCursor(1, 10);
-    lcd.print(temp_t);
-    lcd.setCursor(3, 10);
-    lcd.print(temp_h);
-    temp = filter(temp_t, temp);
-    hum = filter(temp_h, hum);
-    printMeteo();
+    meteo();
+    my_sensor();
   }
 }
