@@ -78,76 +78,11 @@ void My_LiquidCrystal_I2C::setCursor(uint8_t row, uint8_t col) {
 }
 
 /// <summary>
-/// Показать курсрор
-/// </summary>
-void My_LiquidCrystal_I2C::showCursor() {
-	send4byte(B00001110, 0);
-	delayMicroseconds(50);
-}
-
-/// <summary>
-/// Сдвиг дисплея вправо
-/// </summary>
-void My_LiquidCrystal_I2C::scrollDisplayRight() {
-	send4byte(B00011100, 0);
-	delayMicroseconds(50);
-}
-
-/// <summary>
-/// Сдвиг дисплея влево
-/// </summary>
-void My_LiquidCrystal_I2C::scrollDisplayLeft() {
-	send4byte(B00011000, 0);
-	delayMicroseconds(50);
-}
-
-/// <summary>
 /// Установка курсора на начальный адрес
 /// </summary>
 void My_LiquidCrystal_I2C::home() {
 	send4byte(B00000010, 0);
 	delayMicroseconds(2000);
-}
-
-/// <summary>
-/// Запись кастомного символа
-/// </summary>
-/// <param name="location">Адрес записи</param>
-/// <param name="charmap">Байты символа</param>
-void My_LiquidCrystal_I2C::createChar(uint8_t location, uint8_t* charmap) {
-	location &= 0x7;
-	send4byte(0x40 | (location << 3), 0);
-	for (int i = 0; i < 8; i++) {
-		send4byte(charmap[i], 1);
-	}
-}
-
-/// <summary>
-/// Бегущая строка (вызывается только внутри loop)
-/// </summary>
-/// <param name="str">Строка</param>
-/// <param name="row">Строка дисплея, по которой будет движение</param>
-void My_LiquidCrystal_I2C::tickerInRow(const char* str, uint8_t row) {
-	static int count = 0;
-	if (count == 0) {
-		setCursor(row, 0);
-		print(str);
-	}
-	if (count > 20 - strlen(str)) {
-		setCursor(row, 20 - count);
-		print(' ');
-		setCursor(((row + 2) % 4), 20 - count);
-		print(str[20 - count]);
-		if (count >= 20) {
-			count = 0;
-			clearDisplay();
-			setCursor(row, 0);
-			print(str);
-		}
-	}
-	delay(1000);
-	scrollDisplayRight();
-	count++;
 }
 
 

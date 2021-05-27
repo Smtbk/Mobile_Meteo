@@ -44,7 +44,7 @@ float DHT::readHumidity() {
 
 bool DHT::read() {
   uint32_t currenttime = millis();
-  if ((currenttime - _lastreadtime) < MIN_INTERVAL)) {
+  if ((currenttime - _lastreadtime) < MIN_INTERVAL) {
     return _lastresult;
   }
   _lastreadtime = currenttime;
