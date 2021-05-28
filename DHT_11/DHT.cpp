@@ -6,7 +6,7 @@
 
 DHT::DHT(uint8_t pin) {
   _pin = pin;
-  _maxcycles = microsecondsToClockCycles(1000); 
+  _maxcycles = microsecondsToClockCycles(1000);
 }
 
 void DHT::begin(uint8_t usec) {
