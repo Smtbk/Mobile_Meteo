@@ -6,7 +6,7 @@
 
 DHT::DHT(uint8_t pin) {
   _pin = pin;
-  _maxcycles = microsecondsToClockCycles(1000); 
+  _maxcycles = microsecondsToClockCycles(1000);
 }
 
 void DHT::begin(uint8_t usec) {
@@ -16,35 +16,29 @@ void DHT::begin(uint8_t usec) {
 }
 
 
-float DHT::readTemperature() {
-  float f = NAN;
+int DHT::readTemperature() {
+  int f = NAN;
 
   if (read()) {
     f = data[2];
     if (data[3] & 0x80) {
         f = -1 - f;
     }
-    f += (data[3] & 0x0f) * 0.1;
   }
-  
   return f;
 }
 
-float DHT::convertCtoF(float c) { return c * 1.8 + 32; }
-
-float DHT::convertFtoC(float f) { return (f - 32) * 0.55555; }
-
-float DHT::readHumidity() {
-  float f = NAN;
+int DHT::readHumidity() {
+  int f = NAN;
   if (read()) {
-      f = data[0] + data[1] * 0.1;
+      f = data[0];
   }
   return f;
 }
 
 bool DHT::read() {
   uint32_t currenttime = millis();
-  if ((currenttime - _lastreadtime) < MIN_INTERVAL)) {
+  if ((currenttime - _lastreadtime) < MIN_INTERVAL) {
     return _lastresult;
   }
   _lastreadtime = currenttime;
@@ -65,7 +59,7 @@ bool DHT::read() {
     pinMode(_pin, INPUT_PULLUP);
     delayMicroseconds(pullTime);
 
-    InterruptLock lock;
+    noInterrupts();
 
     if (expectPulse(LOW) == TIMEOUT) {
       _lastresult = false;
@@ -80,6 +74,8 @@ bool DHT::read() {
       cycles[i] = expectPulse(LOW);
       cycles[i + 1] = expectPulse(HIGH);
     }
+
+    interrupts();
   } 
 
   for (int i = 0; i < 40; ++i) {

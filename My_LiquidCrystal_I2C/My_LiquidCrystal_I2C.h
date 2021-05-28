@@ -15,12 +15,8 @@ public:
 	void init();
 	void clearDisplay();
 	void setCursor(uint8_t, uint8_t);
-	void showCursor();
-	void scrollDisplayRight();
-	void scrollDisplayLeft();
 	void home();
 	void createChar(uint8_t, uint8_t*);
-	void tickerInRow(const char*, uint8_t);
 };
 
 #endif

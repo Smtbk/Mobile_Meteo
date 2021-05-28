@@ -9,10 +9,8 @@ class DHT {
 public:
   DHT(uint8_t pin);
   void begin(uint8_t usec = 55);
-  float readTemperature();
-  float readHumidity();
-  float convertCtoF(float);
-  float convertFtoC(float);
+  int readTemperature();
+  int readHumidity();
   bool read();
 
 private:
@@ -23,20 +21,6 @@ private:
   uint8_t pullTime;
 
   uint32_t expectPulse(bool level);
-};
-
-class InterruptLock {
-public:
-  InterruptLock() {
-#if !defined(ARDUINO_ARCH_NRF52)
-    noInterrupts();
-#endif
-  }
-  ~InterruptLock() {
-#if !defined(ARDUINO_ARCH_NRF52)
-    interrupts();
-#endif
-  }
 };
 
 #endif
