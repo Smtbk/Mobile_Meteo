@@ -16,28 +16,22 @@ void DHT::begin(uint8_t usec) {
 }
 
 
-float DHT::readTemperature() {
-  float f = NAN;
+int DHT::readTemperature() {
+  int f = NAN;
 
   if (read()) {
     f = data[2];
     if (data[3] & 0x80) {
         f = -1 - f;
     }
-    f += (data[3] & 0x0f) * 0.1;
   }
-  
   return f;
 }
 
-float DHT::convertCtoF(float c) { return c * 1.8 + 32; }
-
-float DHT::convertFtoC(float f) { return (f - 32) * 0.55555; }
-
-float DHT::readHumidity() {
-  float f = NAN;
+int DHT::readHumidity() {
+  int f = NAN;
   if (read()) {
-      f = data[0] + data[1] * 0.1;
+      f = data[0];
   }
   return f;
 }
@@ -65,7 +59,7 @@ bool DHT::read() {
     pinMode(_pin, INPUT_PULLUP);
     delayMicroseconds(pullTime);
 
-    InterruptLock lock;
+    noInterrupts();
 
     if (expectPulse(LOW) == TIMEOUT) {
       _lastresult = false;
@@ -80,6 +74,8 @@ bool DHT::read() {
       cycles[i] = expectPulse(LOW);
       cycles[i + 1] = expectPulse(HIGH);
     }
+
+    interrupts();
   } 
 
   for (int i = 0; i < 40; ++i) {

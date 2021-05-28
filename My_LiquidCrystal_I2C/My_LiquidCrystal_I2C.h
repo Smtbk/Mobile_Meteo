@@ -16,6 +16,7 @@ public:
 	void clearDisplay();
 	void setCursor(uint8_t, uint8_t);
 	void home();
+	void createChar(uint8_t, uint8_t*);
 };
 
 #endif

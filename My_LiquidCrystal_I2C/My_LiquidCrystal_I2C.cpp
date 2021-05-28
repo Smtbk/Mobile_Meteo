@@ -85,6 +85,19 @@ void My_LiquidCrystal_I2C::home() {
 	delayMicroseconds(2000);
 }
 
+/// <summary>
+/// Создает новый символ и записывает его в память дисплея
+/// </summary>
+/// <param name="location">Адрес в памяти</param>
+/// <param name="charmap">Символ в виде массива байт</param>
+void My_LiquidCrystal_I2C::createChar(uint8_t location, uint8_t* charmap) {
+	location &= 0x7;
+	send4byte(0x40 | (location << 3), 0);
+	for (int i = 0; i < 8; i++) {
+		send4byte(charmap[i], 1);
+	}
+}
+
 
 
 /**********private**********/
